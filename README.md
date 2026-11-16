@@ -66,3 +66,20 @@ This section has moved here: https://facebook.github.io/create-react-app/docs/de
 ### `npm run build` fails to minify
 
 This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+
+
+## Fork improvements
+
+* **Shared cart storage module** (`src/cartStorage.js`) — safe `loadCart`/`saveCart`
+  with JSON error handling and item validation (the original inline
+  `JSON.parse(localStorage.getItem('cart'))` crashed on corrupted data), plus
+  `addToCart` that merges with an existing line by incrementing `quantity`.
+* **Fixed duplicate cart lines** — Add to Cart previously pushed the same product
+  once per click and the total ignored quantities. The cart now shows a Qty
+  column, per-line totals, and a correct grand total.
+* **Cart page correctness** — total is computed at render time (not cached in the
+  constructor), added missing React `key` props and image `alt` text, removed
+  leftover `console.log` calls and a pointless `localStorage` overwrite on every
+  products-page mount.
+* **Repository hygiene** — removed committed `.idea/` IDE configuration and
+  expanded `.gitignore`.
