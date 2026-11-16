@@ -1,30 +1,19 @@
 import React, {Component} from "react";
 import Table from "react-bootstrap/Table";
 import {Button, Alert} from "react-bootstrap";
+import {loadCart, clearCart, cartTotal} from "../cartStorage";
 
 class CartShow extends Component {
     constructor() {
         super();
-        let cart = JSON.parse(localStorage.getItem('cart'))
-        if (cart == null) {
-            localStorage.setItem('cart', JSON.stringify([]))
-            cart = []
-        }
-        let total = 0
-        cart.forEach((product) => {
-            total += product.price
-        })
         this.state = {
-            cart: cart,
-            message: '',
-            total: total
+            cart: loadCart(),
+            message: ''
         }
     }
 
     clickHandler = () => {
-
-        localStorage.setItem('cart', JSON.stringify([]))
-
+        clearCart()
         this.setState({
             cart: [],
             message: 'you paid successfully'
@@ -33,13 +22,13 @@ class CartShow extends Component {
 
     render() {
         let alert = this.state.message != '' ? <Alert variant="success">{this.state.message}</Alert> : ''
-        console.log(this.state.message)
         let total = this.state.cart.length > 0 ? this.state.cart.map((item) =>
-            <tr>
+            <tr key={item.id}>
 
                 <td>{item.name}</td>
-                <td>{item.price} €</td>
-                <td><img src={item.image} style={{height: '40px'}}/></td>
+                <td>{item.quantity}</td>
+                <td>{(item.price * item.quantity).toFixed(2)} €</td>
+                <td><img src={item.image} style={{height: '40px'}} alt={item.name}/></td>
 
             </tr>
         ) : null
@@ -51,6 +40,7 @@ class CartShow extends Component {
                     <tr>
 
                         <th>Name</th>
+                        <th>Qty</th>
                         <th>Price</th>
                         <th>Image</th>
                     </tr>
@@ -61,8 +51,7 @@ class CartShow extends Component {
                     {total}
                     <tr>
                         <td style={{color: 'red', fontWeight: 'bold'}}>total</td>
-                        <td>{this.state.total}</td>
-                        <td></td>
+                        <td colSpan={3}>{cartTotal(this.state.cart).toFixed(2)} €</td>
 
                     </tr>
                     </tbody>
