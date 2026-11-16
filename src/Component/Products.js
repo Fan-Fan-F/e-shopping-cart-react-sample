@@ -1,5 +1,6 @@
 import React, {Component} from "react";
 import {Card, Button, CardGroup} from "react-bootstrap";
+import {addToCart} from "../cartStorage";
 
 class Products extends Component {
     constructor() {
@@ -45,7 +46,6 @@ class Products extends Component {
             }
 
         ]
-        localStorage.setItem('products', JSON.stringify(products))
 
         this.state = {
             products: products,
@@ -62,7 +62,7 @@ class Products extends Component {
 
             = this.state
         let productsCart = products.length ? products.map((product) =>
-            <Card style={{width: '18rem'}} >
+            <Card key={product.id} style={{width: '18rem'}} >
                 <Card.Img style={{width: "210px", height: "200px"}} variant="top" src={product.image} onClick={() => {window.location.href=`/product/${product.id}`}}/>
                 <Card.Body>
                     <Card.Title>{product.name}</Card.Title>
@@ -72,14 +72,8 @@ class Products extends Component {
                         {product.amount} PCS available
                     </Card.Text>
                     <Button variant="primary" onClick={() => {
-                        let cart = JSON.parse(localStorage.getItem('cart'))
-                        if (!cart) {
-                            cart = []
-                        }
-                        cart.push(product)
-
-                        localStorage.setItem('cart', JSON.stringify(cart))
-                        console.log(cart)
+                        // merges with an existing line instead of pushing duplicates
+                        addToCart(product)
                     }}>Add to Cart</Button>
                 </Card.Body>
             </Card>
